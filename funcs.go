@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 )
 
 func copyOneFileRWB(fi file, BUFFERSIZE int64) error {
@@ -109,4 +110,17 @@ func readTextFileLoadToMem(filename string) []string {
 		sliceStr = append(sliceStr, scanner.Text())
 	}
 	return sliceStr
+}
+
+func clearSrc(s []string) []string {
+
+	var str []string
+	var tmp string
+
+	for _, item := range s {
+		tmp = strings.TrimSpace(item)
+		tmp = strings.ReplaceAll(tmp, "'", "")
+		str = append(str, tmp)
+	}
+	return str
 }

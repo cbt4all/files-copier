@@ -9,6 +9,7 @@ import (
 func main() {
 
 	lsSrc := readTextFileLoadToMem("src.txt")
+	lsSrc = clearSrc(lsSrc)
 	lsDst := readTextFileLoadToMem("dst.txt")
 
 	// Check what is SH1 of the all srouces
@@ -46,4 +47,5 @@ func main() {
 	for _, item := range files {
 		fmt.Println(copyOneFileRWB(item, 8192))
 	}
+
 }
