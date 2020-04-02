@@ -10,8 +10,8 @@ import (
 	"os"
 )
 
-func copyOneFileRWB(src, dst string, BUFFERSIZE int64) error {
-	sourceFileStat, err := os.Stat(src)
+func copyOneFileRWB(fi file, BUFFERSIZE int64) error {
+	sourceFileStat, err := os.Stat(fi.src)
 	if err != nil {
 		return err
 	}
@@ -21,19 +21,16 @@ func copyOneFileRWB(src, dst string, BUFFERSIZE int64) error {
 	sourceName := sourceFileStat.Name()
 
 	if !sourceFileStat.Mode().IsRegular() {
-		return fmt.Errorf("%s is not a regular file.", src)
+		return fmt.Errorf("%s is not a regular file.", fi.src)
 	}
 
-	source, err := os.Open(src)
+	source, err := os.Open(fi.src)
 	if err != nil {
 		return err
 	}
 	defer source.Close()
 
-	fmt.Printf("source MD5 %x\n", md5Calculator(source))
-	fmt.Printf("source SHA1 %x\n", sha1Calculator(source))
-
-	dstf := dst + sourceName
+	dstf := fi.dst + sourceName
 	_, err = os.Stat(dstf)
 	if err == nil {
 		return fmt.Errorf("File %s already exists.", dstf)
@@ -72,11 +69,12 @@ func copyOneFileRWB(src, dst string, BUFFERSIZE int64) error {
 		}
 
 		tw = tw + int64(n2)
-		fmt.Print("\r", sourceName, " is being copied...", (100*int64(tw))/sourceSize, "%")
-	}
+		totalCoppied = totalCoppied + int64(n2)
 
-	fmt.Printf("\ndestination MD5 %x\n", md5Calculator(destination))
-	fmt.Printf("destination SHA1 %x\n\n", sha1Calculator(destination))
+		fmt.Print("\r", sourceName, " is being copied...", (100*int64(tw))/sourceSize, "% Totally ",
+			(100*int64(totalCoppied))/totalSize, "% is copied")
+
+	}
 
 	return err
 }
